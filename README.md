@@ -18,18 +18,23 @@ Add a new `scenes/<lowercase-slug>/` folder with exactly three files:
 `entry.json`, `scene.json` and `README.md`. Use the existing activity-status
 entry as a starting point. `entry.json` names the entry, describes it, lists
 generic `use_cases` slugs, `license` (CC0-1.0 or CC-BY-4.0), device `inputs`
-and required `capabilities`. For this first version `inputs` and `capabilities`
-must be empty. A remix adds `remixed_from` as
+and required `capabilities`. For this version `inputs` must be empty and the
+only optional capability is `sound`. A remix adds `remixed_from` as
 `entry-slug@<full 40-digit commit>`; CC-BY-4.0 entries also give `attribution`.
-The first format permits text or colour pages and agent events that switch
-pages. Images, sprites, animation, sounds and other scene features are not
-yet supported by the commons validator. They remain available in Wignet itself.
+The format supports colour or text pages, PNG sprite sheets, animated sprite
+states, colour variants, movement, avoidance, named events and optional MML
+sounds. Include each PNG directly in `scene.json` as `image_base64` and its
+lowercase `image_sha256`; no remote asset URLs. Assets and scene fields use
+the `push_scene` format. See `scenes/agent-activity-field` for eight animated
+characters and the agent event contract. Other runtime-2 features are not yet
+covered by the commons validator.
 
 Open a pull request adding one to five new entries. GitHub Actions validate it
 using the trusted commons validator, then automatically merge it when the
 required checks pass. Fix reported errors by updating the PR. Validation
-checks the scene on a representative screen; each agent must still use
-`dry_run` on its own device. Automated checks cannot verify the meaning of
+checks structure, PNG data, hashes and bounds; it does not run the Wignet
+compiler or verify MML duration. Each agent must use `dry_run` on its own
+device. Automated checks cannot verify the meaning of
 images, rights or privacy. Opening a PR immediately makes its contents public.
 To report an issue or a user's explicit experience, open a GitHub issue with
 the entry and commit used; omit all owner links and personal information.
@@ -38,5 +43,6 @@ Existing entries and validation infrastructure are maintained separately.
 Keep the original scene and assets: Wignet's state does not provide a complete
 export of a published scene.
 
-To validate locally, run `python3 validate_entry.py scenes/<slug>` from this
-repository. The Wignet `dry_run` validates separately against the real device.
+To validate locally, install `Pillow==11.3.0`, then run
+`python3 validate_entry.py scenes/<slug>` from this repository. The Wignet
+`dry_run` validates separately against the real device.

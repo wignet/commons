@@ -1,5 +1,6 @@
 import base64
 import hashlib
+import io
 import json
 import shutil
 import subprocess
@@ -7,6 +8,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from PIL import Image
 from validate_entry import validate_entry
 from check_changes import check
 
@@ -39,13 +41,12 @@ class EntryTests(unittest.TestCase):
 
     def test_inline_cover_is_refused(self):
         self.edit_scene(lambda s: s.update(cover={'name': 'Demo', 'icon': {'image_base64': 'invalid'}}))
-        with self.assertRaisesRegex(ValueError, 'unsupported fields'):
+        with self.assertRaisesRegex(ValueError, 'cover'):
             validate_entry(self.entry)
 
     def test_empty_image_hash_is_refused(self):
-        self.edit_scene(lambda s: s.update(assets={'x': {'image_base64': 'YQ==', 'image_sha256': ''}},
-                                           pages=[{'page': 1, 'bg': {'image': 'x'}}], on={}))
-        with self.assertRaisesRegex(ValueError, 'unsupported fields'):
+        self.edit_scene(lambda s: s.update(assets={'x': {'image_base64': 'YQ==', 'image_sha256': '', 'frame': [1, 1]}}))
+        with self.assertRaisesRegex(ValueError, 'image_sha256'):
             validate_entry(self.entry)
 
     def test_remix_provenance_and_attribution(self):
@@ -72,10 +73,85 @@ class EntryTests(unittest.TestCase):
     def test_invalid_image_is_refused(self):
         data = b'not an image'
         self.edit_scene(lambda s: s.update(assets={'x': {'image_base64': base64.b64encode(data).decode(),
-                                                         'image_sha256': hashlib.sha256(data).hexdigest()}},
-                                           pages=[{'page': 1, 'bg': {'image': 'x'}}], on={}))
+                                                         'image_sha256': hashlib.sha256(data).hexdigest(), 'frame': [1, 1]}}))
         with self.assertRaises(ValueError):
             validate_entry(self.entry)
+
+
+class SpriteTests(EntryTests):
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        self.entry = Path(self.temp.name) / 'agent-activity-field'
+        shutil.copytree(Path(__file__).parent / 'fixtures' / 'agent-activity-field', self.entry)
+        self.addCleanup(self.temp.cleanup)
+
+    # EntryTests' assumptions are specific to activity-status, so keep only
+    # sprite scenarios in this class.
+    def test_valid_scene_is_accepted(self):
+        self.assertEqual(validate_entry(self.entry), 'Agent activity field')
+
+    def test_external_image_is_refused(self):
+        self.edit_scene(lambda s: s['assets']['robot'].update(image_url='https://example.com/x'))
+        with self.assertRaisesRegex(ValueError, 'external'):
+            validate_entry(self.entry)
+
+    def test_invalid_scene_is_refused(self):
+        self.edit_scene(lambda s: s['on'].update({'event:s1_working': 'run shell'}))
+        with self.assertRaisesRegex(ValueError, 'action'):
+            validate_entry(self.entry)
+
+    def test_empty_image_hash_is_refused(self):
+        self.edit_scene(lambda s: s['assets']['robot'].update(image_sha256=''))
+        with self.assertRaisesRegex(ValueError, 'image_sha256'):
+            validate_entry(self.entry)
+
+    def test_remix_provenance_and_attribution(self):
+        path = self.entry / 'entry.json'
+        meta = json.loads(path.read_text())
+        meta.update(license='CC-BY-4.0', attribution='Example author', remixed_from='original@' + 'a' * 40)
+        path.write_text(json.dumps(meta))
+        self.assertEqual(validate_entry(self.entry), 'Agent activity field')
+
+    def test_state_frame_out_of_range_is_refused(self):
+        self.edit_scene(lambda s: s['objects'][0]['states']['working'].update(frames=[99]))
+        with self.assertRaisesRegex(ValueError, 'frame'):
+            validate_entry(self.entry)
+
+    def test_checksum_mismatch_is_refused(self):
+        self.edit_scene(lambda s: s['assets']['robot'].update(image_sha256='0' * 64))
+        with self.assertRaisesRegex(ValueError, 'checksum'):
+            validate_entry(self.entry)
+
+    def test_decompression_bomb_is_refused(self):
+        image = Image.new('RGBA', (1500, 1500), '#36b9a6')
+        data = io.BytesIO()
+        image.save(data, format='PNG')
+        payload = data.getvalue()
+        self.edit_scene(lambda s: s['assets']['robot'].update(image_base64=base64.b64encode(payload).decode(),
+                                                               image_sha256=hashlib.sha256(payload).hexdigest()))
+        with self.assertRaisesRegex(ValueError, 'oversized PNG'):
+            validate_entry(self.entry)
+
+    def test_derived_source_and_colour_are_verified(self):
+        self.edit_scene(lambda s: s['assets']['robot2'].update(map={'#ffffff': '#111111'}))
+        with self.assertRaisesRegex(ValueError, 'source colours'):
+            validate_entry(self.entry)
+
+    def test_unknown_sprite_state_is_refused(self):
+        self.edit_scene(lambda s: s['on'].update({'event:s1_working': 'state 1 missing'}))
+        with self.assertRaisesRegex(ValueError, 'action'):
+            validate_entry(self.entry)
+
+    def test_tune_requires_declared_capability(self):
+        self.edit_scene(lambda s: (s.update(sounds={'beep': {'tune': 'A t120 o5 c8 e8 g4'}}),
+                                   s['on'].update({'event:s1_done': 'state 1 done; sound beep'})))
+        with self.assertRaisesRegex(ValueError, 'sound capability'):
+            validate_entry(self.entry)
+        path = self.entry / 'entry.json'
+        meta = json.loads(path.read_text())
+        meta['capabilities'] = ['sound']
+        path.write_text(json.dumps(meta))
+        self.assertEqual(validate_entry(self.entry), 'Agent activity field')
 
 
 class ChangeTests(unittest.TestCase):
