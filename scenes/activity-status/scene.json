@@ -1,0 +1,11 @@
+{
+  "design": [320, 240],
+  "pages": [
+    {"page": 1, "bg": {"text": "# Working\nIn progress"}},
+    {"page": 2, "bg": {"text": "# Waiting\nNeeds attention"}}
+  ],
+  "on": {
+    "event:working": "page 1",
+    "event:waiting": "page 2"
+  }
+}
