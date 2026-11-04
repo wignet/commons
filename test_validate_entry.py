@@ -9,7 +9,7 @@ import unittest
 from pathlib import Path
 
 from PIL import Image
-from validate_entry import validate_entry
+from validate_entry import validate_entry, validate_scene
 from check_changes import check
 
 
@@ -130,6 +130,19 @@ class SpriteTests(EntryTests):
         waiting = scene['objects'][0]['states']['waiting']['frames'][0]
         frame = image.crop((waiting * fw, 0, (waiting + 1) * fw, fh))
         self.assertIn((255, 219, 82, 255), frame.getdata())
+
+    def test_scene_can_be_reduced_to_fewer_slots(self):
+        original = (self.entry / 'scene.json').read_text()
+        for slots in (1, 4, 8):
+            with self.subTest(slots=slots):
+                scene = json.loads(original)
+                scene['objects'] = [item for item in scene['objects'] if item['id'] <= slots]
+                scene['on'] = {key: value for key, value in scene['on'].items()
+                               if int(key.removeprefix('event:s').split('_')[0]) <= slots}
+                sheets = {item['sheet'] for item in scene['objects']}
+                scene['assets'] = {name: item for name, item in scene['assets'].items()
+                                   if name in sheets or name == 'robot'}
+                validate_scene(scene)
 
     def test_decompression_bomb_is_refused(self):
         image = Image.new('RGBA', (1500, 1500), '#36b9a6')
