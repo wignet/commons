@@ -139,8 +139,8 @@ def validate_scene(scene, capabilities=()):
     for name, sound in sounds.items():
         if (not isinstance(name, str) or not re.fullmatch(r'[a-z][a-z0-9_]{0,23}', name) or
                 not isinstance(sound, dict) or set(sound) - {'tune', 'volume'} or
-                not isinstance(sound.get('tune'), str) or not 1 <= len(sound['tune']) <= 1024 or
-                not re.fullmatch(r'[A-Da-z0-9 \n#+.\-&<>\[\]@|]*', sound['tune'])):
+                not isinstance(sound.get('tune'), str) or not 1 <= len(sound['tune']) <= 2048 or
+                not re.fullmatch(r'[\x20-\x7e\r\n\t]*', sound['tune'])):
             fail('sound requires a bounded MML tune')
         if 'volume' in sound and (type(sound['volume']) is not int or not 0 <= sound['volume'] <= 100):
             fail('sound volume must be 0 to 100')

@@ -170,6 +170,15 @@ class SpriteTests(EntryTests):
         path.write_text(json.dumps(meta))
         self.assertEqual(validate_entry(self.entry), 'Agent activity field')
 
+    def test_normalized_mml_header_and_uppercase_notes_are_accepted(self):
+        self.edit_scene(lambda s: (s.update(sounds={'beep': {'tune': '#MML1\nA T120 O5 C8 E8 G4'}}),
+                                   s['on'].update({'event:s1_done': 'state 1 done; sound beep'})))
+        path = self.entry / 'entry.json'
+        meta = json.loads(path.read_text())
+        meta['capabilities'] = ['sound']
+        path.write_text(json.dumps(meta))
+        self.assertEqual(validate_entry(self.entry), 'Agent activity field')
+
 
 class ChangeTests(unittest.TestCase):
     def setUp(self):
