@@ -1,0 +1,9 @@
+{
+  "name": "Task progress",
+  "description": "Show whether a task is running or waiting for attention.",
+  "use_cases": ["task-status", "agent-status"],
+  "license": "CC0-1.0",
+  "inputs": [],
+  "capabilities": [],
+  "remixed_from": "activity-status@cc757192040c59bf7e84eb0380bf96517ca4f2fe"
+}
