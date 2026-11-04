@@ -122,6 +122,15 @@ class SpriteTests(EntryTests):
         with self.assertRaisesRegex(ValueError, 'checksum'):
             validate_entry(self.entry)
 
+    def test_waiting_pose_contains_a_visible_attention_signal(self):
+        scene = json.loads((self.entry / 'scene.json').read_text())
+        asset = scene['assets']['robot']
+        image = Image.open(io.BytesIO(base64.b64decode(asset['image_base64']))).convert('RGBA')
+        fw, fh = asset['frame']
+        waiting = scene['objects'][0]['states']['waiting']['frames'][0]
+        frame = image.crop((waiting * fw, 0, (waiting + 1) * fw, fh))
+        self.assertIn((255, 219, 82, 255), frame.getdata())
+
     def test_decompression_bomb_is_refused(self):
         image = Image.new('RGBA', (1500, 1500), '#36b9a6')
         data = io.BytesIO()

@@ -5,11 +5,11 @@
   ],
   "assets": {
     "robot": {
-      "image_base64": "iVBORw0KGgoAAAANSUhEUgAAAGAAAAAQCAYAAADpunr5AAAArklEQVR4nO2Xyw2AIBBEV2MjNkEL9mAZHCzCg2XYgy3YhKXgjfhhFVAzHuYdNzwwGVhEhEApQkUzjS5Un5s2OJ5+vl/GTEi+Y5eIltwRbSfQT/f9CYiVtbH083y2IDCnABbby2L729oVT+ZAr/8GKevzBICp0B/wN7a7tB46tfYW/jZOuUREzn8C9PN8tiAwDACMDyD2ma2Npf/M95hpdNpDI6bP0U/z2YLAMAAwK+Xo4RhW5ZqaAAAAAElFTkSuQmCC",
-      "image_sha256": "3cbb2aa5aacad6e8376246e9dd4032ff161172c13e906e14fdd9a72debba2452",
+      "image_base64": "iVBORw0KGgoAAAANSUhEUgAAAJAAAAAYCAYAAAAVpXQNAAABRUlEQVR4nO2ZPQ6CQBCFwXgCKy0tvIJXMLGktPcCFB6CwgvQW1qSeAWvQEEJFVcYG0lAl112h+Ev70tIZFfeTODl7RJ8DwwGpQFVv/3D0x+zFyBIQjGZ/2VH3Tyqcy5FXtLvMSf9xZBQTNUhWadvA9WRfrgwjwaYx05/LVlsTkibpoLSgKT2P0Ve0na3EdtbqfS1xY6vR+tNfZ8u7Eanpl+Z6OxfO9V26d/GQDb6quQxmakPfSTQl6ESSCp9JJNHp/83qHNlGzZpMWX9hGIypQ+3f1MCTfn+qGhMuIh3KQL95eqvXAUB8DyNgbIw8rIw6jzugmSNufc/F5BAgAUMBFjgNX6i1JfA/f1mHB9LH29h0GfpYwkDLGAgwAIGAiwaBnL9gNn1OugvT185Ud9sqS42zZuA/nL0sYQBFjAQYAEDAQDG4wMrw0/Bc6OpRwAAAABJRU5ErkJggg==",
+      "image_sha256": "55cf55caa2bc02e23362f24d825615037775505b33171ddb447f70c7d698de47",
       "frame": [
-        16,
-        16
+        24,
+        24
       ],
       "pixel": true
     },
@@ -84,7 +84,7 @@
         "working": {
           "frames": [
             1,
-            2
+            0
           ],
           "ms": 200
         },
@@ -137,7 +137,7 @@
         "working": {
           "frames": [
             1,
-            2
+            0
           ],
           "ms": 200
         },
@@ -190,7 +190,7 @@
         "working": {
           "frames": [
             1,
-            2
+            0
           ],
           "ms": 200
         },
@@ -243,7 +243,7 @@
         "working": {
           "frames": [
             1,
-            2
+            0
           ],
           "ms": 200
         },
@@ -296,7 +296,7 @@
         "working": {
           "frames": [
             1,
-            2
+            0
           ],
           "ms": 200
         },
@@ -349,7 +349,7 @@
         "working": {
           "frames": [
             1,
-            2
+            0
           ],
           "ms": 200
         },
@@ -402,7 +402,7 @@
         "working": {
           "frames": [
             1,
-            2
+            0
           ],
           "ms": 200
         },
@@ -455,7 +455,7 @@
         "working": {
           "frames": [
             1,
-            2
+            0
           ],
           "ms": 200
         },
