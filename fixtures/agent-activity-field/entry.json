@@ -1,0 +1,12 @@
+{
+  "name": "Agent activity field",
+  "description": "Animated characters show the state of up to eight activities.",
+  "use_cases": [
+    "agent-status-face",
+    "agent-status",
+    "task-status"
+  ],
+  "license": "CC0-1.0",
+  "inputs": [],
+  "capabilities": []
+}

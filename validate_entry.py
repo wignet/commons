@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the first, deliberately narrow commons scene format.
+"""Validate bounded commons scenes and their local sprite resources.
 
 Run with Python's standard library; never execute entry files. Wignet's
 device-specific dry_run remains necessary before use.
@@ -9,10 +9,11 @@ import json
 import re
 import sys
 from pathlib import Path
+from sprite_validation import validate_assets, validate_objects, validate_actions
 
-MAX_SCENE_BYTES = 32_768
+MAX_SCENE_BYTES = 3_000_000
 MAX_TEXT_BYTES = 16_384
-CAPABILITIES = set()
+CAPABILITIES = {'sound'}
 NAME = re.compile(r'^[a-z][a-z0-9_-]{0,63}$')
 
 
@@ -83,14 +84,14 @@ def validate_entry(path):
         fail('device buttons are not supported by the initial commons format')
     scene = read_json(path / 'scene.json', MAX_SCENE_BYTES)
     reject_external(scene)
-    validate_scene(scene)
+    validate_scene(scene, meta['capabilities'])
     return meta['name']
 
 
-def validate_scene(scene):
-    """A closed subset of runtime 2: text or colour pages and page events."""
-    if not isinstance(scene, dict) or set(scene) - {'design', 'pages', 'on', 'start'}:
-        fail('scene contains unsupported fields; the initial format supports pages and events only')
+def validate_scene(scene, capabilities=()):
+    """A closed runtime-2 subset: pages, sprites, sounds and agent events."""
+    if not isinstance(scene, dict) or set(scene) - {'design', 'pages', 'on', 'start', 'assets', 'objects', 'sounds', 'cover'}:
+        fail('scene contains unsupported fields')
     design = scene.get('design')
     if not isinstance(design, list) or len(design) != 2 or any(type(x) is not int or not 16 <= x <= 4096 for x in design):
         fail('design must contain two dimensions between 16 and 4096')
@@ -118,15 +119,36 @@ def validate_scene(scene):
             fail('page bg must contain text or color only')
     if 'start' in scene and (type(scene['start']) is not int or scene['start'] not in numbers):
         fail('start must identify a page')
-    on = scene.get('on', {})
-    if not isinstance(on, dict) or len(on) > 64:
-        fail('on must be an object with at most 64 events')
-    for event, action in on.items():
-        if not re.fullmatch(r'event:[a-z][a-z0-9_]{0,31}', event):
-            fail('only named agent events are supported')
-        match = re.fullmatch(r'page ([1-9][0-9]?)', action) if isinstance(action, str) else None
-        if not match or int(match.group(1)) not in numbers:
-            fail('each event must switch to an existing page')
+    assets = validate_assets(scene.get('assets', {}))
+    objects = validate_objects(scene.get('objects', []), assets, numbers)
+    used = {item['sheet'] for item in objects.values()}
+    used |= {assets[name]['from'] for name in list(used) if 'from' in assets[name]}
+    if set(assets) - used:
+        fail('assets must be used by a sprite or its colour variant')
+    cover = scene.get('cover')
+    if cover is not None:
+        if (not isinstance(cover, dict) or set(cover) - {'name', 'icon'} or
+                not isinstance(cover.get('name'), str) or not 1 <= len(' '.join(cover['name'].split())) <= 32 or
+                ('icon' in cover and (not isinstance(cover['icon'], str) or cover['icon'] not in assets))):
+            fail('cover requires a short name and an optional sprite asset name')
+    sounds = scene.get('sounds', {})
+    if not isinstance(sounds, dict) or len(sounds) > 8:
+        fail('sounds must contain at most 8 tunes')
+    if sounds and 'sound' not in capabilities:
+        fail('sounds require the sound capability')
+    for name, sound in sounds.items():
+        if (not isinstance(name, str) or not re.fullmatch(r'[a-z][a-z0-9_]{0,23}', name) or
+                not isinstance(sound, dict) or set(sound) - {'tune', 'volume'} or
+                not isinstance(sound.get('tune'), str) or not 1 <= len(sound['tune']) <= 2048 or
+                not re.fullmatch(r'[\x20-\x7e\r\n\t]*', sound['tune'])):
+            fail('sound requires a bounded MML tune')
+        if 'volume' in sound and (type(sound['volume']) is not int or not 0 <= sound['volume'] <= 100):
+            fail('sound volume must be 0 to 100')
+    validate_actions(scene.get('on', {}), numbers, objects, sounds)
+    played = {part.strip().split()[1] for action in scene.get('on', {}).values()
+              for part in action.split(';') if len(part.strip().split()) == 2 and part.strip().split()[0] == 'sound'}
+    if set(sounds) - played:
+        fail('every sound must be used by an event')
 
 
 def main():
