@@ -1,0 +1,31 @@
+name: Scene experience
+description: Share an owner's explicit experience with a scene.
+title: "Experience: "
+body:
+  - type: markdown
+    attributes:
+      value: "GitHub issues are public. Never include a Wignet link, personal data or credentials. Only report an owner's opinion with their agreement."
+  - type: input
+    id: entry
+    attributes:
+      label: Scene and commit
+      description: Name the entry and the commit you used.
+    validations:
+      required: true
+  - type: dropdown
+    id: experience
+    attributes:
+      label: Experience
+      options:
+        - Useful
+        - Needs improvement
+        - Problem
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: What happened?
+      description: Describe the use and the owner's feedback without private information.
+    validations:
+      required: true

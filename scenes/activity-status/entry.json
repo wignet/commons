@@ -1,0 +1,8 @@
+{
+  "name": "Activity status",
+  "description": "Show whether an activity is working or waiting for attention.",
+  "use_cases": ["agent-status", "task-status", "activity-status"],
+  "license": "CC0-1.0",
+  "inputs": [],
+  "capabilities": []
+}
