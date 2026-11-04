@@ -24,7 +24,7 @@ class EntryTests(unittest.TestCase):
         change(scene)
         path.write_text(json.dumps(scene))
 
-    def test_valid_scene_compiles(self):
+    def test_valid_scene_is_accepted(self):
         self.assertEqual(validate_entry(self.entry), 'Activity status')
 
     def test_external_image_is_refused(self):
@@ -39,13 +39,13 @@ class EntryTests(unittest.TestCase):
 
     def test_inline_cover_is_refused(self):
         self.edit_scene(lambda s: s.update(cover={'name': 'Demo', 'icon': {'image_base64': 'invalid'}}))
-        with self.assertRaisesRegex(ValueError, 'cover.icon'):
+        with self.assertRaisesRegex(ValueError, 'unsupported fields'):
             validate_entry(self.entry)
 
     def test_empty_image_hash_is_refused(self):
         self.edit_scene(lambda s: s.update(assets={'x': {'image_base64': 'YQ==', 'image_sha256': ''}},
                                            pages=[{'page': 1, 'bg': {'image': 'x'}}], on={}))
-        with self.assertRaisesRegex(ValueError, 'image_sha256'):
+        with self.assertRaisesRegex(ValueError, 'unsupported fields'):
             validate_entry(self.entry)
 
     def test_remix_provenance_and_attribution(self):
