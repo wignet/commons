@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Validate one commons entry using a trusted Wignet checkout.
+"""Validate the first, deliberately narrow commons scene format.
 
-Run with PYTHONPATH pointing to Wignet; never execute files from the entry.
-The final dry_run against a physical device is still required.
+Run with Python's standard library; never execute entry files. Wignet's
+device-specific dry_run remains necessary before use.
 """
 import argparse
 import json
@@ -10,12 +10,9 @@ import re
 import sys
 from pathlib import Path
 
-from backoffice import scenes
-from backoffice.publications import PublicationError, acquire
-
-MAX_SCENE_BYTES = 3_000_000
+MAX_SCENE_BYTES = 32_768
 MAX_TEXT_BYTES = 16_384
-CAPABILITIES = {'motion', 'touch', 'sound', 'tone', 'power_short', 'i4', 'battery'}
+CAPABILITIES = set()
 NAME = re.compile(r'^[a-z][a-z0-9_-]{0,63}$')
 
 
@@ -82,26 +79,54 @@ def validate_entry(path):
         fail('use_cases must contain lowercase slugs')
     if set(meta['capabilities']) - CAPABILITIES:
         fail('unknown capability')
-    if any(not scenes.INPUT_NAME.fullmatch(x) or x in scenes.RESERVED_INPUTS for x in meta['inputs']):
-        fail('invalid input name')
+    if meta['inputs']:
+        fail('device buttons are not supported by the initial commons format')
     scene = read_json(path / 'scene.json', MAX_SCENE_BYTES)
     reject_external(scene)
-    cover = scene.get('cover') if isinstance(scene, dict) else None
-    if isinstance(cover, dict) and 'icon' in cover and not isinstance(cover['icon'], str):
-        fail('cover.icon must refer to an asset, not inline image data')
-    caps = {'runtime': 2, 'inputs': meta['inputs'], 'gestures': list(scenes.GESTURES),
-            'limits': dict(scenes.LIMITS), **{name: name in meta['capabilities'] for name in CAPABILITIES}}
-    normalized = scenes.validate(scene, caps, 320, 240)
-    images = {}
-    for name, asset in normalized['assets'].items():
-        if 'from' not in asset:
-            if ('image_base64' not in asset or not isinstance(asset.get('image_sha256'), str)
-                    or not re.fullmatch(r'[0-9a-f]{64}', asset['image_sha256'])):
-                fail(f'asset {name} requires image_base64 and image_sha256')
-            images[name] = acquire({key: asset[key] for key in ('image_base64', 'image_sha256')})
-    # Compile for one representative RGB device: each target still needs its own dry_run.
-    scenes.compile_scene(normalized, images, {'reported_caps': '[]', 'params': '{}'}, 'rgb', 320, 240, 0)
+    validate_scene(scene)
     return meta['name']
+
+
+def validate_scene(scene):
+    """A closed subset of runtime 2: text or colour pages and page events."""
+    if not isinstance(scene, dict) or set(scene) - {'design', 'pages', 'on', 'start'}:
+        fail('scene contains unsupported fields; the initial format supports pages and events only')
+    design = scene.get('design')
+    if not isinstance(design, list) or len(design) != 2 or any(type(x) is not int or not 16 <= x <= 4096 for x in design):
+        fail('design must contain two dimensions between 16 and 4096')
+    pages = scene.get('pages')
+    if not isinstance(pages, list) or not 1 <= len(pages) <= 8:
+        fail('pages must contain 1 to 8 pages')
+    numbers = set()
+    for page in pages:
+        if not isinstance(page, dict) or set(page) != {'page', 'bg'}:
+            fail('each page must contain page and bg only')
+        number = page['page']
+        if type(number) is not int or not 1 <= number <= 99 or number in numbers:
+            fail('page numbers must be unique integers from 1 to 99')
+        numbers.add(number)
+        bg = page['bg']
+        if not isinstance(bg, dict) or len(bg) != 1:
+            fail('page bg must contain text or color only')
+        if 'text' in bg:
+            if not isinstance(bg['text'], str) or len(bg['text']) > 1000:
+                fail('page text must be at most 1000 characters')
+        elif 'color' in bg:
+            if not isinstance(bg['color'], str) or not re.fullmatch(r'#[0-9a-fA-F]{6}', bg['color']):
+                fail('page color must be #rrggbb')
+        else:
+            fail('page bg must contain text or color only')
+    if 'start' in scene and (type(scene['start']) is not int or scene['start'] not in numbers):
+        fail('start must identify a page')
+    on = scene.get('on', {})
+    if not isinstance(on, dict) or len(on) > 64:
+        fail('on must be an object with at most 64 events')
+    for event, action in on.items():
+        if not re.fullmatch(r'event:[a-z][a-z0-9_]{0,31}', event):
+            fail('only named agent events are supported')
+        match = re.fullmatch(r'page ([1-9][0-9]?)', action) if isinstance(action, str) else None
+        if not match or int(match.group(1)) not in numbers:
+            fail('each event must switch to an existing page')
 
 
 def main():
@@ -110,7 +135,7 @@ def main():
     args = parser.parse_args()
     try:
         print('Valid:', validate_entry(args.entry))
-    except (ValueError, OSError, PublicationError) as exc:
+    except (ValueError, OSError) as exc:
         print(f'Invalid entry: {exc}', file=sys.stderr)
         return 1
     return 0
