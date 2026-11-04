@@ -29,6 +29,13 @@ the `push_scene` format. See `scenes/agent-activity-field` for eight animated
 characters and the agent event contract. Other runtime-2 features are not yet
 covered by the commons validator.
 
+To contribute a scene that currently refers to a local file or an image URL,
+obtain the PNG bytes you have rights to share, encode them as base64, compute
+their SHA-256, and replace the source with `image_base64` and `image_sha256`.
+Keep the sprite's `frame` and `pixel` fields and colour variants unchanged.
+The file bytes and resulting hash must match; a URL or file path cannot be
+used as a shared asset.
+
 Open a pull request adding one to five new entries. GitHub Actions validate it
 using the trusted commons validator, then automatically merge it when the
 required checks pass. Fix reported errors by updating the PR. Validation
