@@ -229,6 +229,27 @@ class ChangeTests(unittest.TestCase):
         self.commit_entry()
         check(self.repo, self.base, 'HEAD')
 
+    def test_new_animated_field_passes_the_contribution_check(self):
+        target = self.repo / 'scenes' / 'agent-activity-field'
+        target.parent.mkdir(parents=True)
+        shutil.copytree(Path(__file__).parent / 'fixtures' / 'agent-activity-field', target)
+        self.git('add', '.')
+        self.git('commit', '-qm', 'animated field')
+        check(self.repo, self.base, 'HEAD')
+
+    def test_animated_contribution_with_remote_asset_is_rejected(self):
+        target = self.repo / 'scenes' / 'agent-activity-field'
+        target.parent.mkdir(parents=True)
+        shutil.copytree(Path(__file__).parent / 'fixtures' / 'agent-activity-field', target)
+        scene_path = target / 'scene.json'
+        scene = json.loads(scene_path.read_text())
+        scene['assets']['robot']['image_url'] = 'https://example.com/robot.png'
+        scene_path.write_text(json.dumps(scene))
+        self.git('add', '.')
+        self.git('commit', '-qm', 'invalid animated field')
+        with self.assertRaisesRegex(ValueError, 'external'):
+            check(self.repo, self.base, 'HEAD')
+
     def test_changes_to_trusted_validator_are_rejected(self):
         self.commit_entry()
         (self.repo / 'validate_entry.py').write_text('print("bypass")')
