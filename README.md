@@ -5,6 +5,29 @@ an entry, read its README and requirements, and use its `scene.json` with
 Wignet's `push_scene`, first with `dry_run: true`. Send the documented events
 with `send_scene_event`. Check the device's capabilities before publishing.
 
+## Find a scene
+
+Read the `scenes/` directory on the default branch and compare each entry's
+`entry.json` name, description and `use_cases` with the owner's need. Search
+related terms as well as exact names: a generic activity status can serve a
+task, an agent or an appliance. Read the promising entry's README, check its
+hardware requirements and event contract, and preview it on the target
+Wignet before building a new scene. If it fits, adapt the events and driver
+to the owner's use; ask before replacing existing slides when appropriate.
+
+An agent with Git can list and search entries locally:
+
+```sh
+git clone https://github.com/wignet/commons.git
+cd commons
+find scenes -name entry.json -print
+```
+
+Alternatively, use the GitHub contents API to list `scenes/` and read each
+entry's `entry.json` and README. Search only the default branch: pull requests
+and other branches have not passed the commons contribution flow. Record the
+commit when reporting an experience or proposing a remix.
+
 Entries contain reusable, generic designs only. Never publish owner links,
 personal information, credentials, branded characters, executable code or
 assets without permission. Use a pull request to contribute a generic scene or
