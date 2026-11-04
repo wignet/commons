@@ -1,0 +1,547 @@
+{
+  "design": [
+    320,
+    240
+  ],
+  "assets": {
+    "robot": {
+      "image_base64": "iVBORw0KGgoAAAANSUhEUgAAAJAAAAAYCAYAAAAVpXQNAAABRUlEQVR4nO2ZPQ6CQBCFwXgCKy0tvIJXMLGktPcCFB6CwgvQW1qSeAWvQEEJFVcYG0lAl112h+Ev70tIZFfeTODl7RJ8DwwGpQFVv/3D0x+zFyBIQjGZ/2VH3Tyqcy5FXtLvMSf9xZBQTNUhWadvA9WRfrgwjwaYx05/LVlsTkibpoLSgKT2P0Ve0na3EdtbqfS1xY6vR+tNfZ8u7Eanpl+Z6OxfO9V26d/GQDb6quQxmakPfSTQl6ESSCp9JJNHp/83qHNlGzZpMWX9hGIypQ+3f1MCTfn+qGhMuIh3KQL95eqvXAUB8DyNgbIw8rIw6jzugmSNufc/F5BAgAUMBFjgNX6i1JfA/f1mHB9LH29h0GfpYwkDLGAgwAIGAiwaBnL9gNn1OugvT185Ud9sqS42zZuA/nL0sYQBFjAQYAEDAQDG4wMrw0/Bc6OpRwAAAABJRU5ErkJggg==",
+      "image_sha256": "55cf55caa2bc02e23362f24d825615037775505b33171ddb447f70c7d698de47",
+      "frame": [
+        24,
+        24
+      ],
+      "pixel": true
+    },
+    "robot2": {
+      "from": "robot",
+      "map": {
+        "#36b9a6": "#d16d52"
+      }
+    },
+    "robot3": {
+      "from": "robot",
+      "map": {
+        "#36b9a6": "#7396db"
+      }
+    },
+    "robot4": {
+      "from": "robot",
+      "map": {
+        "#36b9a6": "#b97bd1"
+      }
+    },
+    "robot5": {
+      "from": "robot",
+      "map": {
+        "#36b9a6": "#d8b640"
+      }
+    },
+    "robot6": {
+      "from": "robot",
+      "map": {
+        "#36b9a6": "#6dab64"
+      }
+    },
+    "robot7": {
+      "from": "robot",
+      "map": {
+        "#36b9a6": "#d77da5"
+      }
+    },
+    "robot8": {
+      "from": "robot",
+      "map": {
+        "#36b9a6": "#8a9da5"
+      }
+    }
+  },
+  "pages": [
+    {
+      "page": 1,
+      "bg": {
+        "color": "#101c22"
+      }
+    }
+  ],
+  "objects": [
+    {
+      "page": 1,
+      "id": 1,
+      "obj": "sprite",
+      "sheet": "robot",
+      "anchor": "center",
+      "x": -60,
+      "hidden": true,
+      "states": {
+        "thinking": {
+          "frames": [
+            0,
+            1
+          ],
+          "ms": 500
+        },
+        "working": {
+          "frames": [
+            1,
+            0
+          ],
+          "ms": 200
+        },
+        "waiting": {
+          "frames": [
+            3
+          ],
+          "ms": 500
+        },
+        "done": {
+          "frames": [
+            2
+          ],
+          "ms": 500
+        },
+        "asleep": {
+          "frames": [
+            4,
+            5
+          ],
+          "ms": 1000
+        }
+      },
+      "do": {
+        "wander": {
+          "anchor": "center",
+          "w": 300,
+          "h": 200
+        },
+        "speed": 24,
+        "avoid": true
+      }
+    },
+    {
+      "page": 1,
+      "id": 2,
+      "obj": "sprite",
+      "sheet": "robot2",
+      "anchor": "center",
+      "x": -40,
+      "hidden": true,
+      "states": {
+        "thinking": {
+          "frames": [
+            0,
+            1
+          ],
+          "ms": 500
+        },
+        "working": {
+          "frames": [
+            1,
+            0
+          ],
+          "ms": 200
+        },
+        "waiting": {
+          "frames": [
+            3
+          ],
+          "ms": 500
+        },
+        "done": {
+          "frames": [
+            2
+          ],
+          "ms": 500
+        },
+        "asleep": {
+          "frames": [
+            4,
+            5
+          ],
+          "ms": 1000
+        }
+      },
+      "do": {
+        "wander": {
+          "anchor": "center",
+          "w": 300,
+          "h": 200
+        },
+        "speed": 24,
+        "avoid": true
+      }
+    },
+    {
+      "page": 1,
+      "id": 3,
+      "obj": "sprite",
+      "sheet": "robot3",
+      "anchor": "center",
+      "x": -20,
+      "hidden": true,
+      "states": {
+        "thinking": {
+          "frames": [
+            0,
+            1
+          ],
+          "ms": 500
+        },
+        "working": {
+          "frames": [
+            1,
+            0
+          ],
+          "ms": 200
+        },
+        "waiting": {
+          "frames": [
+            3
+          ],
+          "ms": 500
+        },
+        "done": {
+          "frames": [
+            2
+          ],
+          "ms": 500
+        },
+        "asleep": {
+          "frames": [
+            4,
+            5
+          ],
+          "ms": 1000
+        }
+      },
+      "do": {
+        "wander": {
+          "anchor": "center",
+          "w": 300,
+          "h": 200
+        },
+        "speed": 24,
+        "avoid": true
+      }
+    },
+    {
+      "page": 1,
+      "id": 4,
+      "obj": "sprite",
+      "sheet": "robot4",
+      "anchor": "center",
+      "x": 0,
+      "hidden": true,
+      "states": {
+        "thinking": {
+          "frames": [
+            0,
+            1
+          ],
+          "ms": 500
+        },
+        "working": {
+          "frames": [
+            1,
+            0
+          ],
+          "ms": 200
+        },
+        "waiting": {
+          "frames": [
+            3
+          ],
+          "ms": 500
+        },
+        "done": {
+          "frames": [
+            2
+          ],
+          "ms": 500
+        },
+        "asleep": {
+          "frames": [
+            4,
+            5
+          ],
+          "ms": 1000
+        }
+      },
+      "do": {
+        "wander": {
+          "anchor": "center",
+          "w": 300,
+          "h": 200
+        },
+        "speed": 24,
+        "avoid": true
+      }
+    },
+    {
+      "page": 1,
+      "id": 5,
+      "obj": "sprite",
+      "sheet": "robot5",
+      "anchor": "center",
+      "x": 20,
+      "hidden": true,
+      "states": {
+        "thinking": {
+          "frames": [
+            0,
+            1
+          ],
+          "ms": 500
+        },
+        "working": {
+          "frames": [
+            1,
+            0
+          ],
+          "ms": 200
+        },
+        "waiting": {
+          "frames": [
+            3
+          ],
+          "ms": 500
+        },
+        "done": {
+          "frames": [
+            2
+          ],
+          "ms": 500
+        },
+        "asleep": {
+          "frames": [
+            4,
+            5
+          ],
+          "ms": 1000
+        }
+      },
+      "do": {
+        "wander": {
+          "anchor": "center",
+          "w": 300,
+          "h": 200
+        },
+        "speed": 24,
+        "avoid": true
+      }
+    },
+    {
+      "page": 1,
+      "id": 6,
+      "obj": "sprite",
+      "sheet": "robot6",
+      "anchor": "center",
+      "x": 40,
+      "hidden": true,
+      "states": {
+        "thinking": {
+          "frames": [
+            0,
+            1
+          ],
+          "ms": 500
+        },
+        "working": {
+          "frames": [
+            1,
+            0
+          ],
+          "ms": 200
+        },
+        "waiting": {
+          "frames": [
+            3
+          ],
+          "ms": 500
+        },
+        "done": {
+          "frames": [
+            2
+          ],
+          "ms": 500
+        },
+        "asleep": {
+          "frames": [
+            4,
+            5
+          ],
+          "ms": 1000
+        }
+      },
+      "do": {
+        "wander": {
+          "anchor": "center",
+          "w": 300,
+          "h": 200
+        },
+        "speed": 24,
+        "avoid": true
+      }
+    },
+    {
+      "page": 1,
+      "id": 7,
+      "obj": "sprite",
+      "sheet": "robot7",
+      "anchor": "center",
+      "x": 60,
+      "hidden": true,
+      "states": {
+        "thinking": {
+          "frames": [
+            0,
+            1
+          ],
+          "ms": 500
+        },
+        "working": {
+          "frames": [
+            1,
+            0
+          ],
+          "ms": 200
+        },
+        "waiting": {
+          "frames": [
+            3
+          ],
+          "ms": 500
+        },
+        "done": {
+          "frames": [
+            2
+          ],
+          "ms": 500
+        },
+        "asleep": {
+          "frames": [
+            4,
+            5
+          ],
+          "ms": 1000
+        }
+      },
+      "do": {
+        "wander": {
+          "anchor": "center",
+          "w": 300,
+          "h": 200
+        },
+        "speed": 24,
+        "avoid": true
+      }
+    },
+    {
+      "page": 1,
+      "id": 8,
+      "obj": "sprite",
+      "sheet": "robot8",
+      "anchor": "center",
+      "x": 80,
+      "hidden": true,
+      "states": {
+        "thinking": {
+          "frames": [
+            0,
+            1
+          ],
+          "ms": 500
+        },
+        "working": {
+          "frames": [
+            1,
+            0
+          ],
+          "ms": 200
+        },
+        "waiting": {
+          "frames": [
+            3
+          ],
+          "ms": 500
+        },
+        "done": {
+          "frames": [
+            2
+          ],
+          "ms": 500
+        },
+        "asleep": {
+          "frames": [
+            4,
+            5
+          ],
+          "ms": 1000
+        }
+      },
+      "do": {
+        "wander": {
+          "anchor": "center",
+          "w": 300,
+          "h": 200
+        },
+        "speed": 24,
+        "avoid": true
+      }
+    }
+  ],
+  "on": {
+    "event:s1_thinking": "show 1; state 1 thinking; wander 1 on",
+    "event:s1_working": "show 1; state 1 working; wander 1 on",
+    "event:s1_waiting": "show 1; state 1 waiting; wander 1 off",
+    "event:s1_done": "show 1; state 1 done; wander 1 off",
+    "event:s1_asleep": "show 1; state 1 asleep; wander 1 off",
+    "event:s1_gone": "hide 1; wander 1 off",
+    "event:s2_thinking": "show 2; state 2 thinking; wander 2 on",
+    "event:s2_working": "show 2; state 2 working; wander 2 on",
+    "event:s2_waiting": "show 2; state 2 waiting; wander 2 off",
+    "event:s2_done": "show 2; state 2 done; wander 2 off",
+    "event:s2_asleep": "show 2; state 2 asleep; wander 2 off",
+    "event:s2_gone": "hide 2; wander 2 off",
+    "event:s3_thinking": "show 3; state 3 thinking; wander 3 on",
+    "event:s3_working": "show 3; state 3 working; wander 3 on",
+    "event:s3_waiting": "show 3; state 3 waiting; wander 3 off",
+    "event:s3_done": "show 3; state 3 done; wander 3 off",
+    "event:s3_asleep": "show 3; state 3 asleep; wander 3 off",
+    "event:s3_gone": "hide 3; wander 3 off",
+    "event:s4_thinking": "show 4; state 4 thinking; wander 4 on",
+    "event:s4_working": "show 4; state 4 working; wander 4 on",
+    "event:s4_waiting": "show 4; state 4 waiting; wander 4 off",
+    "event:s4_done": "show 4; state 4 done; wander 4 off",
+    "event:s4_asleep": "show 4; state 4 asleep; wander 4 off",
+    "event:s4_gone": "hide 4; wander 4 off",
+    "event:s5_thinking": "show 5; state 5 thinking; wander 5 on",
+    "event:s5_working": "show 5; state 5 working; wander 5 on",
+    "event:s5_waiting": "show 5; state 5 waiting; wander 5 off",
+    "event:s5_done": "show 5; state 5 done; wander 5 off",
+    "event:s5_asleep": "show 5; state 5 asleep; wander 5 off",
+    "event:s5_gone": "hide 5; wander 5 off",
+    "event:s6_thinking": "show 6; state 6 thinking; wander 6 on",
+    "event:s6_working": "show 6; state 6 working; wander 6 on",
+    "event:s6_waiting": "show 6; state 6 waiting; wander 6 off",
+    "event:s6_done": "show 6; state 6 done; wander 6 off",
+    "event:s6_asleep": "show 6; state 6 asleep; wander 6 off",
+    "event:s6_gone": "hide 6; wander 6 off",
+    "event:s7_thinking": "show 7; state 7 thinking; wander 7 on",
+    "event:s7_working": "show 7; state 7 working; wander 7 on",
+    "event:s7_waiting": "show 7; state 7 waiting; wander 7 off",
+    "event:s7_done": "show 7; state 7 done; wander 7 off",
+    "event:s7_asleep": "show 7; state 7 asleep; wander 7 off",
+    "event:s7_gone": "hide 7; wander 7 off",
+    "event:s8_thinking": "show 8; state 8 thinking; wander 8 on",
+    "event:s8_working": "show 8; state 8 working; wander 8 on",
+    "event:s8_waiting": "show 8; state 8 waiting; wander 8 off",
+    "event:s8_done": "show 8; state 8 done; wander 8 off",
+    "event:s8_asleep": "show 8; state 8 asleep; wander 8 off",
+    "event:s8_gone": "hide 8; wander 8 off"
+  },
+  "cover": {
+    "name": "Agent activity field",
+    "icon": "robot"
+  }
+}

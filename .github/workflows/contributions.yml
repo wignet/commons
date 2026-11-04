@@ -27,6 +27,8 @@ jobs:
           path: proposed
           fetch-depth: 0
           persist-credentials: false
+      - name: Install PNG decoder
+        run: python -m pip install --disable-pip-version-check Pillow==11.3.0
       - name: Validate proposed entries
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
