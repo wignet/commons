@@ -17,3 +17,7 @@ to publish it temporarily or replace the slides. For a screen with different
 dimensions, Wignet scales the design and reports memory use; reduce the
 number of robots if the device cannot hold it. The scene uses no sound and
 therefore also works on devices without a speaker.
+
+The robots start hidden, so include `"simulate": [{"at": 0, "event":
+"event:s1_working"}]` alongside `dry_run: true` to see the first robot in
+the preview. For a real `send_scene_event` call omit the `event:` prefix.
