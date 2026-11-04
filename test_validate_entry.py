@@ -153,6 +153,23 @@ class SpriteTests(EntryTests):
         path.write_text(json.dumps(meta))
         self.assertEqual(validate_entry(self.entry), 'Agent activity field')
 
+    def test_eight_characters_with_twenty_two_frame_sheet_and_sound(self):
+        image = Image.new('RGBA', (78 * 22, 66), '#36b9a6')
+        out = io.BytesIO()
+        image.save(out, format='PNG')
+        payload = out.getvalue()
+        def change(scene):
+            scene['assets']['robot'].update(image_base64=base64.b64encode(payload).decode(),
+                                            image_sha256=hashlib.sha256(payload).hexdigest(), frame=[78, 66])
+            scene['sounds'] = {'beep': {'tune': 'A t120 o5 c8 e8 g4'}}
+            scene['on']['event:s1_done'] += '; sound beep'
+        self.edit_scene(change)
+        path = self.entry / 'entry.json'
+        meta = json.loads(path.read_text())
+        meta['capabilities'] = ['sound']
+        path.write_text(json.dumps(meta))
+        self.assertEqual(validate_entry(self.entry), 'Agent activity field')
+
 
 class ChangeTests(unittest.TestCase):
     def setUp(self):
